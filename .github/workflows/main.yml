@@ -25,7 +25,7 @@ jobs:
 
     - name: Lint code
       run: |
-        flake8 src/main_addon.py
+        flake8 main_addon.py
 
   package:
     name: Package and Release
@@ -38,12 +38,12 @@ jobs:
     - name: Extract version
       id: extract_version
       run: |
-        version=$(sed -n "s/^.*version = '\(.*\)'.*/\1/p" src/main_addon.py)
+        version=$(sed -n "s/^version = '\(.*\)'.*/\1/p" main_addon.py)
         echo "VERSION=$version" >> $GITHUB_ENV
 
     - name: Create zip file
       run: |
-        zip -r PhantomEngineAddon_${{ env.VERSION }}.zip src/main_addon.py
+        zip -r PhantomEngineAddon_${{ env.VERSION }}.zip main_addon.py
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
@@ -57,3 +57,4 @@ jobs:
       with:
         name: PhantomEngineAddon_${{ env.VERSION }}
         path: PhantomEngineAddon_${{ env.VERSION }}.zip
+
