@@ -35,11 +35,6 @@ jobs:
         run: |
           zip -r PhantomEngineAddon_v${{ env.VERSION }}.zip .
 
-      - name: Create tag
-        run: |
-          git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
-          git push origin "v${{ env.VERSION }}"
-
       - name: Create Release
         id: create_release
         run: |
