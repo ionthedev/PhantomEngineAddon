@@ -1,9 +1,59 @@
-name: Build Blender Addon
-uses: blenderkit/blender-addon-build@main
-with:
-    name: 'PhantomEngineAddon'
-    name-suffix: 'commit-hash'
-    build-command: 'make build'
-    build-location: './build'
-    do-checkout: 'true'
-    exclude-files: '.git;.github;.gitignore'
+name: Verify and Release Add-on
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  verify:
+    name: Verify Code
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install flake8
+
+    - name: Lint code
+      run: |
+        flake8 src/main_addon.py
+
+  package:
+    name: Package and Release
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Extract version
+      id: extract_version
+      run: |
+        version=$(sed -n "s/^.*version = '\(.*\)'.*/\1/p" src/main_addon.py)
+        echo "VERSION=$version" >> $GITHUB_ENV
+
+    - name: Create zip file
+      run: |
+        zip -r PhantomEngineAddon_${{ env.VERSION }}.zip src/main_addon.py
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: PhantomEngineAddon_${{ env.VERSION }}.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload Release Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: PhantomEngineAddon_${{ env.VERSION }}
+        path: PhantomEngineAddon_${{ env.VERSION }}.zip
