@@ -51,8 +51,6 @@ jobs:
         run: |
           git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
           git push origin "v${{ env.VERSION }}"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
@@ -70,6 +68,4 @@ jobs:
           asset_path: PhantomEngineAddon_v${{ env.VERSION }}.zip
           asset_name: PhantomEngineAddon_v${{ env.VERSION }}.zip
           asset_content_type: application/zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
