@@ -1,6 +1,6 @@
 name: Build Blender Addon
-  uses: BlenderKit/blender-addon-build-action@v1
-  with:
+uses: BlenderKit/blender-addon-build-action@v1
+with:
     name: 'PhantomEngineAddon'
     name-suffix: 'commit-hash'
     build-command: 'make build'
