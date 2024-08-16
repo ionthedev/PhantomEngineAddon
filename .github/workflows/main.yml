@@ -1,6 +1,8 @@
 name: Release
 
 on:
+  push:
+    branches: [ '**' ]
   pull_request:
     branches: [ '**' ]
   workflow_dispatch:
@@ -25,7 +27,7 @@ jobs:
         run: |
           # Extract version number from line 4 of main_addon.py
           version=$(grep -oP '(?<=version": \()[0-9]+,[0-9]+,[0-9]+' main_addon.py | tr -d '(),' | sed 's/,/./g')
-          echo "VERSION=v${version}" >> $GITHUB_ENV
+          echo "VERSION=${version}" >> $GITHUB_ENV
 
       - name: Build addon
         uses: blenderkit/blender-addon-build@main
@@ -35,7 +37,7 @@ jobs:
 
       - name: Create zip file
         run: |
-          zip -r PhantomEngineAddon_${{ env.VERSION }}.zip main_addon.py
+          zip -r PhantomEngineAddon_v${{ env.VERSION }}.zip main_addon.py
 
   Release:
     runs-on: ubuntu-latest
@@ -48,14 +50,14 @@ jobs:
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
-          files: PhantomEngineAddon_${{ env.VERSION }}.zip
+          files: PhantomEngineAddon_v${{ env.VERSION }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag Release
         run: |
-          git tag -a "${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
-          git push origin "${{ env.VERSION }}"
+          git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
