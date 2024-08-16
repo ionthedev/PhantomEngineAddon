@@ -81,4 +81,3 @@ class SceneDataExporter(bpy.types.Operator):
         """Invokes the file selector dialog."""
         context.window_manager.fileselect_add(self)
         return {'RUNNING_MODAL'}
-

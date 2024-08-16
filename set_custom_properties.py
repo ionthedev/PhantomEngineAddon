@@ -35,4 +35,3 @@ class SetCustomProperties(bpy.types.Operator):
 
         self.report({'INFO'}, "Custom properties set for selected objects.")
         return {'FINISHED'}
-
