@@ -43,7 +43,6 @@ jobs:
       - name: Release addon
         uses: blenderkit/blender-addon-release@main
         with:
-          artifact_name: phantom-engine-addon
           release_name: PhantomEngineAddon
           version: ${{ env.VERSION }}
 
