@@ -1,4 +1,4 @@
-- name: Build Blender Addon
+name: Build Blender Addon
   uses: BlenderKit/blender-addon-build-action@v1
   with:
     name: 'PhantomEngineAddon'
