@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  push:
+  pull_request:
     branches: [ '**' ]
   workflow_dispatch:
     inputs:
@@ -24,8 +24,8 @@ jobs:
         id: extract_version
         run: |
           # Extract version number from line 4 of main_addon.py
-          version=$(sed -n "4p" main_addon.py | sed "s/^version = '\(.*\)'.*/\1/")
-          echo "VERSION=$version" >> $GITHUB_ENV
+          version=$(grep -oP '(?<=version": \()[0-9]+,[0-9]+,[0-9]+' main_addon.py | tr -d '(),' | sed 's/,/./g')
+          echo "VERSION=v${version}" >> $GITHUB_ENV
 
       - name: Build addon
         uses: blenderkit/blender-addon-build@main
@@ -44,14 +44,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: PhantomEngineAddon_${{ env.VERSION }}.zip
-          asset_name: PhantomEngineAddon_${{ env.VERSION }}.zip
-          asset_content_type: application/zip
-
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
@@ -62,8 +54,8 @@ jobs:
 
       - name: Tag Release
         run: |
-          git tag -a "v${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
-          git push origin "v${{ env.VERSION }}"
+          git tag -a "${{ env.VERSION }}" -m "Release version ${{ env.VERSION }}"
+          git push origin "${{ env.VERSION }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
