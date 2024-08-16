@@ -1,3 +1,9 @@
-              - name: Blender Addon Build
-                uses: BlenderKit/blender-addon-build@v0.1
-            
+- name: Build Blender Addon
+  uses: BlenderKit/blender-addon-build-action@v1
+  with:
+    name: 'PhantomEngineAddon'
+    name-suffix: 'commit-hash'
+    build-command: 'make build'
+    build-location: './build'
+    do-checkout: 'true'
+    exclude-files: '.git;.github;.gitignore'
