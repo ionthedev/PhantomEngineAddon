@@ -6,7 +6,6 @@ bl_info = {
     "description": "A utility for creating maps for games using the Phantom Engine",
     "category": "Object",
 }
-
 import bpy
 import json
 
